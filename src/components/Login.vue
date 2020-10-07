@@ -5,6 +5,7 @@
       app-id="633593563867021"
       @sdk-init="handleSdkInit"
     ></v-facebook-login>
+    <button @click="getPosts()">GET POSTS</button>
   </div>
 </template>
 
@@ -20,8 +21,35 @@ export default {
     FB: {},
     model: {},
     scope: {},
+    userId: null,
   }),
   methods: {
+    getUserId() {
+      return new Promise((resolve) => {
+        this.FB.api("/me", (response) => {
+          this.userId = response.id;
+          resolve(this.userId);
+        });
+      });
+    },
+
+    getCertainGroup() {
+      this.FB.api("/548739628937538", (response) => {
+        console.log(response);
+      });
+    },
+
+    getUserGroups(userId) {
+      this.FB.api(`/${userId}/groups`, (response) => {
+        console.log(response);
+      });
+    },
+    getPosts() {
+      this.getUserId().then((userId) => {
+        this.getUserGroups(userId);
+      });
+      this.getCertainGroup();
+    },
     testData(scope) {
       console.log(scope.connected);
     },
